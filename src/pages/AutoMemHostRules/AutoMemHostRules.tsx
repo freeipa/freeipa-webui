@@ -26,7 +26,7 @@ import ToolbarLayout, {
 } from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 // Tables
-import MainTable from "../AutoMemUserRules/AutomemRulesTable";
+import MainTable from "src/components/tables/MainTable";
 // Components
 import PaginationLayout from "../../components/layouts/PaginationLayout";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
@@ -285,16 +285,6 @@ const AutoMemHostRules = () => {
     setIsDeleteButtonDisabled(newSelectedAutomembers.length === 0);
   };
 
-  // - Helper method to set the selected entries from the table
-  const setAutomembersSelected = (
-    automember: AutomemberEntry,
-    isSelecting = true
-  ) => {
-    if (isAutomemberUserGroupSelectable(automember)) {
-      updateSelectedAutomembers([automember], isSelecting);
-    }
-  };
-
   // Data wrappers
   // TODO: Better separation of concerts
   // - 'BulkSelectorPrep'
@@ -321,7 +311,7 @@ const AutoMemHostRules = () => {
     isElementSelectable: isAutomemberUserGroupSelectable,
     selectedElements: selectedAutomembers,
     selectableElementsTable: selectableAutomembersTable,
-    setElementsSelected: setAutomembersSelected,
+    setElementsSelected: updateSelectedAutomembers,
     clearSelectedElements: clearSelectedRules,
   };
 
@@ -506,13 +496,18 @@ const AutoMemHostRules = () => {
                   <GlobalErrors errors={globalErrors.getAll()} />
                 ) : (
                   <MainTable
+                    tableTitle="Automember host groups table"
                     shownElementsList={automemberRules}
+                    pk="automemberRule"
+                    keyNames={["automemberRule", "description"]}
+                    columnNames={["Automember rule", "Description"]}
+                    hasCheckboxes={true}
+                    pathname="host-group-rules"
                     showTableRows={!hostGroupRulesData.isFetching}
+                    showLink={true}
                     elementsData={automembersTableData}
                     buttonsData={automembersTableButtonsData}
                     paginationData={selectedPerPageData}
-                    searchValue={searchValue}
-                    automemberType="host-group"
                   />
                 )}
               </InnerScrollContainer>

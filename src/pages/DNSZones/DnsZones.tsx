@@ -184,13 +184,6 @@ const DnsZones = () => {
     setIsDeleteButtonDisabled(newSelectedDnsZones.length === 0);
   };
 
-  // - Helper method to set the selected entries from the table
-  const setDnsZonesSelected = (dnsZone: DNSZone, isSelecting = true) => {
-    if (isDnsZoneSelectable(dnsZone)) {
-      updateSelectedDnsZones([dnsZone], isSelecting);
-    }
-  };
-
   const selectedPerPageData = getSelectedPerPageData(
     dnsZones,
     selectedElements.map((dnsZone) => ipaPrimaryKey(dnsZone.idnsname)),
@@ -380,7 +373,7 @@ const DnsZones = () => {
                         isElementSelectable: isDnsZoneSelectable,
                         selectedElements,
                         selectableElementsTable: selectableDnsZonesTable,
-                        setElementsSelected: setDnsZonesSelected,
+                        setElementsSelected: updateSelectedDnsZones,
                         clearSelectedElements: () => setSelectedElements([]),
                       }}
                       buttonsData={{

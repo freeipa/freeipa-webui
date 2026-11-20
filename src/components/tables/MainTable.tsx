@@ -12,6 +12,8 @@ import EmptyBodyTable from "./EmptyBodyTable";
 import { CheckIcon, MinusIcon } from "@patternfly/react-icons";
 // Utils
 import { checkEqualStatusGen } from "src/utils/utils";
+import { encodeRouteId } from "src/utils/routeUtils";
+import { ipaPrimaryKey } from "src/utils/selectedPerPage";
 
 /**
  * This component renders a table with the specified columns and rows.
@@ -23,7 +25,7 @@ interface SelectedElementsData<T> {
   isElementSelectable: (element: T) => boolean;
   selectedElements: T[];
   selectableElementsTable: T[];
-  setElementsSelected: (rule: T, isSelecting?: boolean) => void;
+  setElementsSelected?: (elements: T[], isSelecting: boolean) => void;
   clearSelectedElements: () => void;
 }
 
@@ -101,6 +103,11 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
   >(null);
   const [shifting, setShifting] = React.useState(false);
 
+  // The range anchor is an index into the visible list, so drop it when that list changes
+  React.useEffect(() => {
+    setRecentSelectedRowIndex(null);
+  }, [props.shownElementsList]);
+
   // On selecting one single row
   const onSelectElement = (
     element: T,
@@ -108,20 +115,22 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
     isSelecting: boolean
   ) => {
     // If the element is shift + selecting the checkboxes, then all intermediate checkboxes should be selected
+    let elements: T[];
     if (shifting && recentSelectedRowIndex !== null) {
       const numberSelected = rowIndex - recentSelectedRowIndex;
       const intermediateIndexes = Array.from(
         new Array(Math.abs(numberSelected) + 1),
         (_, i) => i + Math.min(recentSelectedRowIndex, rowIndex)
       );
-      intermediateIndexes.forEach((index) =>
-        props.elementsData?.setElementsSelected(
-          shownElementsList[index],
-          isSelecting
-        )
-      );
+      elements = intermediateIndexes.map((index) => shownElementsList[index]);
     } else {
-      props.elementsData?.setElementsSelected(element, isSelecting);
+      elements = [element];
+    }
+    elements = elements.filter(
+      (el) => el !== undefined && props.elementsData?.isElementSelectable(el)
+    );
+    if (elements.length > 0) {
+      props.elementsData?.setElementsSelected?.(elements, isSelecting);
     }
     setRecentSelectedRowIndex(rowIndex);
 
@@ -360,17 +369,20 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
             const content = renderCellContent(cell);
             return (
               <Td
-                dataLabel={columnNames[keyName]}
+                dataLabel={columnNames[idx]}
                 key={keyName + "-" + idx + "-" + elementName}
                 id={idx.toString()}
                 style={setStyleOnStatus(cell)}
-                aria-label={keyName}
-                data-label={keyName}
                 data-cy={`table-row-${elementName}-${keyName}`}
               >
                 {idx === 0 && !!props.showLink ? (
                   <Link
-                    to={"/" + props.pathname + "/" + element[keyName]}
+                    to={
+                      "/" +
+                      props.pathname +
+                      "/" +
+                      encodeRouteId(ipaPrimaryKey(element[keyName]))
+                    }
                     state={element}
                   >
                     {content}

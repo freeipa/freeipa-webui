@@ -25,7 +25,7 @@ import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 // Tables
-import SudoRulesTable from "./SudoRulesTable";
+import MainTable from "src/components/tables/MainTable";
 // Components
 import PaginationLayout from "../../components/layouts/PaginationLayout";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
@@ -255,13 +255,6 @@ const SudoRules = () => {
     setIsDeleteButtonDisabled(newSelectedRules.length === 0);
   };
 
-  // - Helper method to set the selected entries from the table
-  const setRulesSelected = (rule: SudoRule, isSelecting = true) => {
-    if (isSudoRuleSelectable(rule)) {
-      updateSelectedRules([rule], isSelecting);
-    }
-  };
-
   const selectedPerPageData = getSelectedPerPageData(
     rulesList,
     selectedRules.map((item) => ipaPrimaryKey(item.cn)),
@@ -305,11 +298,11 @@ const SudoRules = () => {
 
   // 'RulesTable'
   const rulesTableData = {
-    isSudoRuleSelectable,
-    selectedRules,
-    selectableRulesTable,
-    setRulesSelected,
-    clearSelectedRules,
+    isElementSelectable: isSudoRuleSelectable,
+    selectedElements: selectedRules,
+    selectableElementsTable: selectableRulesTable,
+    setElementsSelected: updateSelectedRules,
+    clearSelectedElements: clearSelectedRules,
   };
 
   const rulesTableButtonsData = {
@@ -463,13 +456,30 @@ const SudoRules = () => {
                   {batchError !== undefined && batchError ? (
                     <GlobalErrors errors={globalErrors.getAll()} />
                   ) : (
-                    <SudoRulesTable
+                    <MainTable
+                      tableTitle="Sudo rules table"
                       shownElementsList={rulesList}
+                      pk="cn"
+                      keyNames={[
+                        "cn",
+                        "sudoorder",
+                        "ipaenabledflag",
+                        "description",
+                      ]}
+                      columnNames={[
+                        "Rule name",
+                        "Sudo order",
+                        "Status",
+                        "Description",
+                      ]}
+                      hasCheckboxes={true}
+                      pathname="sudo-rules"
                       showTableRows={!isBatchFetching}
-                      rulesData={rulesTableData}
+                      showLink={true}
+                      elementsData={rulesTableData}
                       buttonsData={rulesTableButtonsData}
                       paginationData={selectedPerPageData}
-                      searchValue={searchValue}
+                      statusElementName="ipaenabledflag"
                     />
                   )}
                 </InnerScrollContainer>

@@ -178,13 +178,6 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
     setIsDeleteButtonDisabled(newSelectedDnsRecords.length === 0);
   };
 
-  // - Helper method to set the selected entries from the table
-  const setDnsRecordsSelected = (dnsRecord: DNSRecord, isSelecting = true) => {
-    if (isDnsRecordSelectable(dnsRecord)) {
-      updateSelectedDnsRecords([dnsRecord], isSelecting);
-    }
-  };
-
   // Show table rows
   // Show table rows only when data is fully retrieved
   const selectedPerPageData = getSelectedPerPageData(
@@ -355,7 +348,7 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
                             isElementSelectable: isDnsRecordSelectable,
                             selectedElements,
                             selectableElementsTable: selectableDnsRecordsTable,
-                            setElementsSelected: setDnsRecordsSelected,
+                            setElementsSelected: updateSelectedDnsRecords,
                             clearSelectedElements: () =>
                               setSelectedElements([]),
                           }}

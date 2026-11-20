@@ -192,16 +192,6 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
     setIsDeleteButtonDisabled(newSelectedTrustDomains.length === 0);
   };
 
-  // - Helper method to set the selected entries from the table
-  const setTrustedDomainsSelected = (
-    trustDomain: TrustDomain,
-    isSelecting = true
-  ) => {
-    if (isTrustDomainSelectable(trustDomain)) {
-      updateSelectedTrustDomains([trustDomain], isSelecting);
-    }
-  };
-
   // Fetch trusted domains
   const [isFetchingDomains, setIsFetchingDomains] =
     React.useState<boolean>(false);
@@ -451,7 +441,7 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
                             selectedElements,
                             selectableElementsTable:
                               selectableTrustDomainsTable,
-                            setElementsSelected: setTrustedDomainsSelected,
+                            setElementsSelected: updateSelectedTrustDomains,
                             clearSelectedElements: () =>
                               setSelectedElements([]),
                           }}

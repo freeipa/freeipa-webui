@@ -24,7 +24,7 @@ import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayou
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 // Tables
-import HostGroupsTable from "src/pages/HostGroups/HostGroupsTable";
+import MainTable from "src/components/tables/MainTable";
 // Modal
 import AddHostGroup from "src/components/modals/AddHostGroup";
 import DeleteHostGroups from "src/components/modals/DeleteHostGroups";
@@ -214,13 +214,6 @@ const HostGroups = () => {
     setIsDeleteButtonDisabled(newSelectedGroups.length === 0);
   };
 
-  // - Helper method to set the selected groups from the table
-  const setGroupSelected = (group: HostGroup, isSelecting = true) => {
-    if (isHostGroupSelectable(group)) {
-      updateSelectedGroups([group], isSelecting);
-    }
-  };
-
   // Modals functionality
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -268,11 +261,11 @@ const HostGroups = () => {
 
   // - 'HostGroupsTable'
   const groupsTableData = {
-    isHostGroupSelectable,
-    selectedGroups,
-    selectableGroupsTable,
-    setGroupSelected,
-    clearSelectedGroups,
+    isElementSelectable: isHostGroupSelectable,
+    selectedElements: selectedGroups,
+    selectableElementsTable: selectableGroupsTable,
+    setElementsSelected: updateSelectedGroups,
+    clearSelectedElements: clearSelectedGroups,
   };
 
   const groupsTableButtonsData = {
@@ -394,14 +387,19 @@ const HostGroups = () => {
                   {batchError !== undefined && batchError ? (
                     <GlobalErrors errors={globalErrors.getAll()} />
                   ) : (
-                    <HostGroupsTable
-                      elementsList={groupsList}
+                    <MainTable
+                      tableTitle="Host groups table"
                       shownElementsList={groupsList}
+                      pk="cn"
+                      keyNames={["cn", "description"]}
+                      columnNames={["Group Name", "Description"]}
+                      hasCheckboxes={true}
+                      pathname="host-groups"
                       showTableRows={!isBatchFetching}
-                      groupsData={groupsTableData}
+                      showLink={true}
+                      elementsData={groupsTableData}
                       buttonsData={groupsTableButtonsData}
                       paginationData={selectedPerPageData}
-                      searchValue={searchValue}
                     />
                   )}
                 </InnerScrollContainer>

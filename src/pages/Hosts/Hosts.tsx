@@ -29,7 +29,7 @@ import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 
 // Tables
-import HostsTable from "./HostsTable";
+import MainTable from "src/components/tables/MainTable";
 // Modal
 import AddHost from "src/components/modals/HostModals/AddHost";
 import DeleteHosts from "src/components/modals/HostModals/DeleteHosts";
@@ -220,13 +220,6 @@ const Hosts = () => {
     setIsDeleteButtonDisabled(newSelectedHosts.length === 0);
   };
 
-  // - Helper method to set the selected users from the table
-  const setHostSelected = (host: Host, isSelecting = true) => {
-    if (isHostSelectable(host)) {
-      updateSelectedHosts([host], isSelecting);
-    }
-  };
-
   // Dropdown kebab
   const [kebabIsOpen, setKebabIsOpen] = useState(false);
 
@@ -400,11 +393,11 @@ const Hosts = () => {
 
   // - 'HostsTable'
   const hostsTableData = {
-    isHostSelectable,
-    selectedHosts,
-    selectableHostsTable,
-    setHostSelected,
-    clearSelectedHosts,
+    isElementSelectable: isHostSelectable,
+    selectedElements: selectedHosts,
+    selectableElementsTable: selectableHostsTable,
+    setElementsSelected: updateSelectedHosts,
+    clearSelectedElements: clearSelectedHosts,
   };
 
   const hostsTableButtonsData = {
@@ -542,14 +535,20 @@ const Hosts = () => {
                   {batchError !== undefined && batchError ? (
                     <GlobalErrors errors={globalErrors.getAll()} />
                   ) : (
-                    <HostsTable
-                      elementsList={hostsList}
+                    <MainTable
+                      tableTitle="Hosts table"
                       shownElementsList={hostsList}
+                      pk="fqdn"
+                      keyNames={["fqdn", "description", "has_keytab"]}
+                      columnNames={["Host name", "Description", "Enrolled"]}
+                      hasCheckboxes={true}
+                      pathname="hosts"
                       showTableRows={!isBatchFetching}
-                      hostsData={hostsTableData}
+                      showLink={true}
+                      elementsData={hostsTableData}
                       buttonsData={hostsTableButtonsData}
                       paginationData={selectedPerPageData}
-                      searchValue={searchValue}
+                      booleanColumns={[{ column: "has_keytab" }]}
                     />
                   )}
                 </InnerScrollContainer>

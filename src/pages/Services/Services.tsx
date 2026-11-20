@@ -24,7 +24,7 @@ import BulkSelectorPrep from "../../components/BulkSelectorPrep";
 import PaginationLayout from "../../components/layouts/PaginationLayout";
 
 // Tables
-import ServicesTable from "./ServicesTable";
+import MainTable from "src/components/tables/MainTable";
 // Redux
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 // Data types
@@ -191,13 +191,6 @@ const Services = () => {
     setIsDeleteButtonDisabled(newSelectedServices.length === 0);
   };
 
-  // - Helper method to set the selected users from the table
-  const setServiceSelected = (service: Service, isSelecting = true) => {
-    if (isServiceSelectable(service)) {
-      updateSelectedServices([service], isSelecting);
-    }
-  };
-
   // Derived states - what we get from API
   const servicesDataResponse = useGettingServicesQuery({
     searchValue: searchValue,
@@ -283,11 +276,11 @@ const Services = () => {
 
   // - 'ServicesTable'
   const servicesTableData = {
-    isServiceSelectable,
-    selectedServices,
-    selectableServicesTable,
-    setServiceSelected,
-    clearSelectedServices,
+    isElementSelectable: isServiceSelectable,
+    selectedElements: selectedServices,
+    selectableElementsTable: selectableServicesTable,
+    setElementsSelected: updateSelectedServices,
+    clearSelectedElements: clearSelectedServices,
   };
 
   const servicesTableButtonsData = {
@@ -421,14 +414,19 @@ const Services = () => {
                   {batchError !== undefined && batchError ? (
                     <GlobalErrors errors={globalErrors.getAll()} />
                   ) : (
-                    <ServicesTable
-                      elementsList={servicesList}
+                    <MainTable
+                      tableTitle="Services table"
                       shownElementsList={servicesList}
+                      pk="krbcanonicalname"
+                      keyNames={["krbcanonicalname"]}
+                      columnNames={["Principal name"]}
+                      hasCheckboxes={true}
+                      pathname="services"
                       showTableRows={!isBatchFetching}
-                      servicesData={servicesTableData}
+                      showLink={true}
+                      elementsData={servicesTableData}
                       buttonsData={servicesTableButtonsData}
                       paginationData={selectedPerPageData}
-                      searchValue={searchValue}
                     />
                   )}
                 </InnerScrollContainer>

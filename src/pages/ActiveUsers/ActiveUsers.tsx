@@ -30,7 +30,7 @@ import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Tables
-import UsersTable from "../../components/tables/UsersTable";
+import MainTable from "../../components/tables/MainTable";
 // Components
 import PaginationLayout from "../../components/layouts/PaginationLayout";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
@@ -403,13 +403,6 @@ const ActiveUsers = () => {
     setIsDeleteButtonDisabled(newSelectedUsers.length === 0);
   };
 
-  // - Helper method to set the selected users from the table
-  const setUserSelected = (user: User, isSelecting = true) => {
-    if (isUserSelectable(user)) {
-      updateSelectedUsers([user], isSelecting);
-    }
-  };
-
   // Data wrappers
   // TODO: Better separation of concerts
   // - 'BulkSelectorUsersPrep'
@@ -451,13 +444,13 @@ const ActiveUsers = () => {
     updateIsDisableEnableOp,
   };
 
-  // 'UsersTable'
+  // 'MainTable'
   const usersTableData = {
-    isUserSelectable,
-    selectedUsers,
-    selectableUsersTable,
-    setUserSelected,
-    clearSelectedUsers,
+    isElementSelectable: isUserSelectable,
+    selectedElements: selectedUsers,
+    selectableElementsTable: selectableUsersTable,
+    setElementsSelected: updateSelectedUsers,
+    clearSelectedElements: clearSelectedUsers,
   };
 
   const usersTableButtonsData = {
@@ -624,14 +617,39 @@ const ActiveUsers = () => {
                 {batchError !== undefined && batchError ? (
                   <GlobalErrors errors={globalErrors.getAll()} />
                 ) : (
-                  <UsersTable
+                  <MainTable
+                    tableTitle="Active users table"
                     shownElementsList={activeUsersList}
-                    from="active-users"
+                    pk="uid"
+                    keyNames={[
+                      "uid",
+                      "givenname",
+                      "sn",
+                      "nsaccountlock",
+                      "uidnumber",
+                      "mail",
+                      "telephonenumber",
+                      "title",
+                    ]}
+                    columnNames={[
+                      "User login",
+                      "First name",
+                      "Last name",
+                      "Status",
+                      "UID",
+                      "Email address",
+                      "Phone",
+                      "Job title",
+                    ]}
+                    hasCheckboxes={true}
+                    pathname="active-users"
                     showTableRows={!isBatchFetching}
-                    usersData={usersTableData}
+                    showLink={true}
+                    elementsData={usersTableData}
                     buttonsData={usersTableButtonsData}
                     paginationData={selectedPerPageData}
-                    searchValue={searchValue}
+                    statusElementName="nsaccountlock"
+                    invertStatusValue={true}
                   />
                 )}
               </InnerScrollContainer>

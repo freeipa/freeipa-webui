@@ -181,15 +181,6 @@ const Permissions = () => {
     setIsDeleteButtonDisabled(newSelectedPermissions.length === 0);
   };
 
-  const setPermissionSelected = (
-    permission: Permission,
-    isSelecting = true
-  ) => {
-    if (isPermissionSelectable(permission)) {
-      updateSelectedPermissions([permission], isSelecting);
-    }
-  };
-
   const bulkSelectorData = {
     selected: selectedPermissions,
     updateSelected: updateSelectedPermissions,
@@ -339,7 +330,7 @@ const Permissions = () => {
                       isElementSelectable: isPermissionSelectable,
                       selectedElements: selectedPermissions,
                       selectableElementsTable: selectablePermissionsTable,
-                      setElementsSelected: setPermissionSelected,
+                      setElementsSelected: updateSelectedPermissions,
                       clearSelectedElements: clearSelectedPermissions,
                     }}
                     buttonsData={{

@@ -1,5 +1,6 @@
 import { useParams } from "react-router";
 import { invariantNonNullable, TupleUnion } from "./invariants";
+import { decodeRouteId } from "./routeUtils";
 
 export type UidParams = {
   uid: string;
@@ -24,5 +25,10 @@ export const useSafeParams = <T extends Params>(
 ) => {
   const params = useParams<T>();
   invariantNonNullable(params, validation);
-  return params;
+  return Object.fromEntries(
+    Object.entries(params).map(([key, value]) => [
+      key,
+      value === undefined ? value : decodeRouteId(value),
+    ])
+  ) as T;
 };

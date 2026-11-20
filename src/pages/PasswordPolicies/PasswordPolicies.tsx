@@ -198,13 +198,6 @@ const PasswordPolicies = () => {
     setIsDeleteButtonDisabled(newSelectedPwPolicies.length === 0);
   };
 
-  // - Helper method to set the selected entries from the table
-  const setPwPoliciesSelected = (pwPolicy: PwPolicy, isSelecting = true) => {
-    if (isPwPolicySelectable(pwPolicy)) {
-      updateSelectedPwPolicies([pwPolicy], isSelecting);
-    }
-  };
-
   const selectedPerPageData = getSelectedPerPageData(
     pwPolicies,
     selectedElements.map((item) => ipaPrimaryKey(item.cn)),
@@ -378,7 +371,7 @@ const PasswordPolicies = () => {
                         isElementSelectable: isPwPolicySelectable,
                         selectedElements,
                         selectableElementsTable: selectablePwPoliciesTable,
-                        setElementsSelected: setPwPoliciesSelected,
+                        setElementsSelected: updateSelectedPwPolicies,
                         clearSelectedElements,
                       }}
                       buttonsData={{

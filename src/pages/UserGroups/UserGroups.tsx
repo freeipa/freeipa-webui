@@ -24,7 +24,7 @@ import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayou
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 // Tables
-import UserGroupsTable from "./UserGroupsTable";
+import MainTable from "src/components/tables/MainTable";
 // Modal
 import AddUserGroup from "src/components/modals/AddUserGroup";
 import DeleteUserGroups from "src/components/modals/DeleteUserGroups";
@@ -204,13 +204,6 @@ const UserGroups = () => {
     setIsDeleteButtonDisabled(newSelectedGroups.length === 0);
   };
 
-  // - Helper method to set the selected users from the table
-  const setGroupSelected = (group: UserGroup, isSelecting = true) => {
-    if (isUserGroupSelectable(group)) {
-      updateSelectedGroups([group], isSelecting);
-    }
-  };
-
   // Modals functionality
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -258,11 +251,11 @@ const UserGroups = () => {
 
   // - 'UserGroupsTable'
   const groupsTableData = {
-    isUserGroupSelectable,
-    selectedGroups,
-    selectableGroupsTable,
-    setGroupSelected,
-    clearSelectedGroups,
+    isElementSelectable: isUserGroupSelectable,
+    selectedElements: selectedGroups,
+    selectableElementsTable: selectableGroupsTable,
+    setElementsSelected: updateSelectedGroups,
+    clearSelectedElements: clearSelectedGroups,
   };
 
   const groupsTableButtonsData = {
@@ -384,14 +377,19 @@ const UserGroups = () => {
                   {batchError !== undefined && batchError ? (
                     <GlobalErrors errors={globalErrors.getAll()} />
                   ) : (
-                    <UserGroupsTable
-                      elementsList={groupsList}
+                    <MainTable
+                      tableTitle="User groups table"
                       shownElementsList={groupsList}
+                      pk="cn"
+                      keyNames={["cn", "gidnumber", "description"]}
+                      columnNames={["Group Name", "GID", "Description"]}
+                      hasCheckboxes={true}
+                      pathname="user-groups"
                       showTableRows={!isBatchFetching}
-                      groupsData={groupsTableData}
+                      showLink={true}
+                      elementsData={groupsTableData}
                       buttonsData={groupsTableButtonsData}
                       paginationData={selectedPerPageData}
-                      searchValue={searchValue}
                     />
                   )}
                 </InnerScrollContainer>

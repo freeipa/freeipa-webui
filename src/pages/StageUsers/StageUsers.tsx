@@ -28,7 +28,7 @@ import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 // Tables
-import UsersTable from "../../components/tables/UsersTable";
+import MainTable from "../../components/tables/MainTable";
 // Components
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
@@ -203,13 +203,6 @@ const StageUsers = () => {
     setIsDeleteButtonDisabled(newSelectedUsers.length === 0);
   };
 
-  // - Helper method to set the selected users from the table
-  const setUserSelected = (user: User, isSelecting = true) => {
-    if (isUserSelectable(user)) {
-      updateSelectedUsers([user], isSelecting);
-    }
-  };
-
   // Modals functionality
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -264,13 +257,13 @@ const StageUsers = () => {
     clearSelectedUsers,
   };
 
-  // 'UsersTable'
+  // 'MainTable'
   const usersTableData = {
-    isUserSelectable,
-    selectedUsers,
-    selectableUsersTable,
-    setUserSelected,
-    clearSelectedUsers,
+    isElementSelectable: isUserSelectable,
+    selectedElements: selectedUsers,
+    selectableElementsTable: selectableUsersTable,
+    setElementsSelected: updateSelectedUsers,
+    clearSelectedElements: clearSelectedUsers,
   };
 
   const usersTableButtonsData = {
@@ -409,14 +402,35 @@ const StageUsers = () => {
                   {batchError !== undefined && batchError ? (
                     <GlobalErrors errors={globalErrors.getAll()} />
                   ) : (
-                    <UsersTable
+                    <MainTable
+                      tableTitle="Stage users table"
                       shownElementsList={stageUsersList}
-                      from="stage-users"
+                      pk="uid"
+                      keyNames={[
+                        "uid",
+                        "givenname",
+                        "sn",
+                        "uidnumber",
+                        "mail",
+                        "telephonenumber",
+                        "title",
+                      ]}
+                      columnNames={[
+                        "User login",
+                        "First name",
+                        "Last name",
+                        "UID",
+                        "Email address",
+                        "Phone",
+                        "Job title",
+                      ]}
+                      hasCheckboxes={true}
+                      pathname="stage-users"
                       showTableRows={!isBatchFetching}
-                      usersData={usersTableData}
+                      showLink={true}
+                      elementsData={usersTableData}
                       buttonsData={usersTableButtonsData}
                       paginationData={selectedPerPageData}
-                      searchValue={searchValue}
                     />
                   )}
                 </InnerScrollContainer>

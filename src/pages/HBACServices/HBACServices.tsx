@@ -25,7 +25,7 @@ import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 // Tables
-import HBACServicesTable from "./HBACServicesTable";
+import MainTable from "src/components/tables/MainTable";
 // Components
 import PaginationLayout from "../../components/layouts/PaginationLayout";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
@@ -224,13 +224,6 @@ const HBACServices = () => {
     setIsDeleteButtonDisabled(newSelectedServices.length === 0);
   };
 
-  // - Helper method to set the selected entries from the table
-  const setServicesSelected = (service: HBACService, isSelecting = true) => {
-    if (isHbacServiceSelectable(service)) {
-      updateSelectedServices([service], isSelecting);
-    }
-  };
-
   // Data wrappers
   // TODO: Better separation of concerts
   // - 'BulkSelectorHBACServicesPrep'
@@ -264,11 +257,11 @@ const HBACServices = () => {
 
   // 'ServicesTable'
   const servicesTableData = {
-    isHbacServiceSelectable,
-    selectedServices,
-    selectableServicesTable,
-    setServicesSelected,
-    clearSelectedServices,
+    isElementSelectable: isHbacServiceSelectable,
+    selectedElements: selectedServices,
+    selectableElementsTable: selectableServicesTable,
+    setElementsSelected: updateSelectedServices,
+    clearSelectedElements: clearSelectedServices,
   };
 
   const servicesTableButtonsData = {
@@ -394,13 +387,19 @@ const HBACServices = () => {
                   {batchError !== undefined && batchError ? (
                     <GlobalErrors errors={globalErrors.getAll()} />
                   ) : (
-                    <HBACServicesTable
+                    <MainTable
+                      tableTitle="HBAC services table"
                       shownElementsList={servicesList}
+                      pk="cn"
+                      keyNames={["cn", "description"]}
+                      columnNames={["Service name", "Description"]}
+                      hasCheckboxes={true}
+                      pathname="hbac-services"
                       showTableRows={!isBatchFetching}
-                      servicesData={servicesTableData}
+                      showLink={true}
+                      elementsData={servicesTableData}
                       buttonsData={servicesTableButtonsData}
                       paginationData={selectedPerPageData}
-                      searchValue={searchValue}
                     />
                   )}
                 </InnerScrollContainer>

@@ -17,6 +17,7 @@ import { NotFound } from "src/components/errors/PageErrors";
 import SudoCmdsSettings from "./SudoCmdsSettings";
 import SudoCmdsMemberOf from "./SudoCmdsMemberOf";
 import { useSafeParams } from "src/utils/paramsUtils";
+import { encodeRouteId } from "src/utils/routeUtils";
 
 type SudoCmdsParams = {
   sudocmd: string;
@@ -27,15 +28,13 @@ const SudoCmdsTabs = ({ section }) => {
   // Get location (React Router DOM) and get state data
   const { sudocmd } = useSafeParams<SudoCmdsParams>(["sudocmd"]);
 
-  // As the id is sent by React Router DOM partially decoded, this should be fixed
-  const decodedSudoCmd = decodeURIComponent(sudocmd); // original ID
-  const doubleEncodedSudoCmd = encodeURIComponent(
-    encodeURIComponent(decodedSudoCmd)
-  ); // double encoded ID
+  // useSafeParams returns the original id
+  const sudoCmdId = sudocmd;
+  const encodedSudoCmd = encodeRouteId(sudoCmdId);
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const settingsData = useSudoCmdsSettings(decodedSudoCmd);
+  const settingsData = useSudoCmdsSettings(sudoCmdId);
 
   // Tab
   const [activeTabKey, setActiveTabKey] = useState(section);
@@ -48,11 +47,9 @@ const SudoCmdsTabs = ({ section }) => {
     tabIndex: number | string
   ) => {
     if (tabIndex === "settings") {
-      navigate("/sudo-commands/" + doubleEncodedSudoCmd);
+      navigate("/sudo-commands/" + encodedSudoCmd);
     } else if (tabIndex === "memberof") {
-      navigate(
-        "/sudo-commands/" + doubleEncodedSudoCmd + "/memberof_sudocmdgroup"
-      );
+      navigate("/sudo-commands/" + encodedSudoCmd + "/memberof_sudocmdgroup");
     }
   };
 
@@ -64,20 +61,20 @@ const SudoCmdsTabs = ({ section }) => {
         url: "/sudo-commands",
       },
       {
-        name: decodedSudoCmd,
-        url: "/sudo-commands/" + doubleEncodedSudoCmd,
+        name: sudoCmdId,
+        url: "/sudo-commands/" + encodedSudoCmd,
         isActive: true,
       },
     ];
     setBreadcrumbItems(currentPath);
     setActiveTabKey("settings");
     dispatch(updateBreadCrumbPath(currentPath));
-  }, [decodedSudoCmd]);
+  }, [sudoCmdId]);
 
   // Redirect to the settings page if the section is not defined
   React.useEffect(() => {
     if (!section) {
-      navigate("/sudo-commands/" + doubleEncodedSudoCmd);
+      navigate("/sudo-commands/" + encodedSudoCmd);
     }
     setActiveTabKey(section);
     const section_string = section as string;

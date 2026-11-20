@@ -166,13 +166,6 @@ const DnsForwardZones = () => {
     }
   };
 
-  // - Helper method to set the selected entries from the table
-  const setDnsZonesSelected = (dnsZone: DNSForwardZone, isSelecting = true) => {
-    if (isDnsForwardZoneSelectable(dnsZone)) {
-      updateSelectedDnsZones([dnsZone], isSelecting);
-    }
-  };
-
   // Show table rows
   const selectedPerPageData = getSelectedPerPageData(
     dnsForwardZones,
@@ -374,7 +367,7 @@ const DnsForwardZones = () => {
                         isElementSelectable: isDnsForwardZoneSelectable,
                         selectedElements,
                         selectableElementsTable: selectableDnsZonesTable,
-                        setElementsSelected: setDnsZonesSelected,
+                        setElementsSelected: updateSelectedDnsZones,
                         clearSelectedElements: () => setSelectedElements([]),
                       }}
                       buttonsData={{

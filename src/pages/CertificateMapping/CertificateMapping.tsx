@@ -206,16 +206,6 @@ const CertificateMappingPage = () => {
     setIsDeleteButtonDisabled(newSelectedCertMapRules.length === 0);
   };
 
-  // - Helper method to set the selected entries from the table
-  const setCertMapRulesSelected = (
-    certMapRule: CertificateMapping,
-    isSelecting = true
-  ) => {
-    if (isCertMapSelectable(certMapRule)) {
-      updateSelectedCertMapRules([certMapRule], isSelecting);
-    }
-  };
-
   const selectedPerPageData = getSelectedPerPageData(
     certMapRules,
     selectedElements.map((item) => ipaPrimaryKey(item.cn)),
@@ -410,7 +400,7 @@ const CertificateMappingPage = () => {
                       isElementSelectable: isCertMapSelectable,
                       selectedElements,
                       selectableElementsTable: selectableCertMapRulesTable,
-                      setElementsSelected: setCertMapRulesSelected,
+                      setElementsSelected: updateSelectedCertMapRules,
                       clearSelectedElements: () => setSelectedElements([]),
                     }}
                     buttonsData={{
