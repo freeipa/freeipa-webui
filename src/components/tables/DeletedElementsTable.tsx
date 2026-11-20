@@ -100,6 +100,10 @@ const DeletedElementsTable = <T,>(props: PropsToDeletedElementsTable<T>) => {
           )}
         </Tr>
       ));
+    } else {
+      throw new Error(
+        `Invalid mode passed to DeletedElementsTable: ${props.mode as never}`
+      );
     }
   };
 

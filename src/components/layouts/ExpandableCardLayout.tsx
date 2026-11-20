@@ -41,7 +41,7 @@ const ExpandableCardLayout = (props: PropsToCardLayout) => {
   };
 
   // Toggle
-  const KebabToggleWithRef = (toggleRef: React.Ref<MenuToggleElement>) => (
+  const toggleKebab = (toggleRef: React.Ref<MenuToggleElement>) => (
     <MenuToggle
       data-cy={props.id + "-kebab"}
       ref={toggleRef}
@@ -56,17 +56,15 @@ const ExpandableCardLayout = (props: PropsToCardLayout) => {
   );
 
   const getDropdownItems = () => {
-    if (props.dropdownItems !== undefined && props.dropdownItems.length > 0) {
-      return (
-        <Dropdown
-          data-cy={props.id + "-kebab-dropdown"}
-          toggle={KebabToggleWithRef}
-          isOpen={isOpen}
-        >
-          <DropdownList>{props.dropdownItems}</DropdownList>
-        </Dropdown>
-      );
-    }
+    return (
+      <Dropdown
+        data-cy={props.id + "-kebab-dropdown"}
+        toggle={toggleKebab}
+        isOpen={isOpen}
+      >
+        <DropdownList>{props.dropdownItems}</DropdownList>
+      </Dropdown>
+    );
   };
 
   return (
@@ -87,7 +85,9 @@ const ExpandableCardLayout = (props: PropsToCardLayout) => {
             {props.cardTitle !== undefined && <>{props.cardTitle}</>}
           </FlexItem>
           <FlexItem align={{ default: "alignRight" }}>
-            {props.dropdownItems !== undefined && getDropdownItems()}
+            {props.dropdownItems !== undefined &&
+              props.dropdownItems.length > 0 &&
+              getDropdownItems()}
           </FlexItem>
         </Flex>
       </CardHeader>
