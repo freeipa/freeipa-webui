@@ -45,6 +45,8 @@ const useDnsServersSettingsData = (
     if (
       dnsServerData &&
       !dnsServerDetails.isFetching &&
+      "result" in dnsServerData &&
+      dnsServerData.result !== null &&
       "result" in dnsServerData.result
     ) {
       const currentDnsServer: DnsServer = apiToDnsServer(
