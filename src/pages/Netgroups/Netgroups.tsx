@@ -204,13 +204,6 @@ const Netgroups = () => {
     setIsDeleteButtonDisabled(newSelectedGroups.length === 0);
   };
 
-  // - Helper method to set the selected groups from the table
-  const setGroupSelected = (group: Netgroup, isSelecting = true) => {
-    if (isNetgroupSelectable(group)) {
-      updateSelectedGroups([group], isSelecting);
-    }
-  };
-
   // Modals functionality
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -248,8 +241,7 @@ const Netgroups = () => {
     isElementSelectable: isNetgroupSelectable,
     selectedElements: selectedGroups,
     selectableElementsTable: selectableGroupsTable,
-    setElementsSelected: setGroupSelected,
-    setElementsRangeSelected: updateSelectedGroups,
+    setElementsSelected: updateSelectedGroups,
     clearSelectedElements: clearSelectedGroups,
   };
 

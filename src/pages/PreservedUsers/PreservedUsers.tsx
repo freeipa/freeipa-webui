@@ -206,13 +206,6 @@ const PreservedUsers = () => {
     setIsDeleteButtonDisabled(newSelectedUsers.length === 0);
   };
 
-  // - Helper method to set the selected users from the table
-  const setUserSelected = (user: User, isSelecting = true) => {
-    if (isUserSelectable(user)) {
-      updateSelectedUsers([user], isSelecting);
-    }
-  };
-
   // Modals functionality
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showRestoreModal, setShowRestoreModal] = useState(false);
@@ -258,8 +251,7 @@ const PreservedUsers = () => {
     isElementSelectable: isUserSelectable,
     selectedElements: selectedUsers,
     selectableElementsTable: selectableUsersTable,
-    setElementsSelected: setUserSelected,
-    setElementsRangeSelected: updateSelectedUsers,
+    setElementsSelected: updateSelectedUsers,
     clearSelectedElements: clearSelectedUsers,
   };
 

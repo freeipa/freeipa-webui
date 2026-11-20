@@ -23,8 +23,7 @@ interface SelectedElementsData<T> {
   isElementSelectable: (element: T) => boolean;
   selectedElements: T[];
   selectableElementsTable: T[];
-  setElementsSelected: (rule: T, isSelecting?: boolean) => void;
-  setElementsRangeSelected?: (elements: T[], isSelecting: boolean) => void;
+  setElementsSelected?: (elements: T[], isSelecting: boolean) => void;
   clearSelectedElements: () => void;
 }
 
@@ -115,30 +114,22 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
     isSelecting: boolean
   ) => {
     // If the element is shift + selecting the checkboxes, then all intermediate checkboxes should be selected
+    let elements: T[];
     if (shifting && recentSelectedRowIndex !== null) {
       const numberSelected = rowIndex - recentSelectedRowIndex;
       const intermediateIndexes = Array.from(
         new Array(Math.abs(numberSelected) + 1),
         (_, i) => i + Math.min(recentSelectedRowIndex, rowIndex)
       );
-      const elements = intermediateIndexes
-        .map((index) => shownElementsList[index])
-        .filter(
-          (element) =>
-            element !== undefined &&
-            props.elementsData?.isElementSelectable(element)
-        );
-      if (elements.length > 0) {
-        if (props.elementsData?.setElementsRangeSelected) {
-          props.elementsData.setElementsRangeSelected(elements, isSelecting);
-        } else {
-          elements.forEach((element) =>
-            props.elementsData?.setElementsSelected(element, isSelecting)
-          );
-        }
-      }
+      elements = intermediateIndexes.map((index) => shownElementsList[index]);
     } else {
-      props.elementsData?.setElementsSelected(element, isSelecting);
+      elements = [element];
+    }
+    elements = elements.filter(
+      (el) => el !== undefined && props.elementsData?.isElementSelectable(el)
+    );
+    if (elements.length > 0) {
+      props.elementsData?.setElementsSelected?.(elements, isSelecting);
     }
     setRecentSelectedRowIndex(rowIndex);
 

@@ -162,11 +162,6 @@ const IdRanges = () => {
 
   // Selection helpers
   const selectableIdRangesTable = shownElementsList.filter(isIdRangeSelectable);
-  const setIdRangesSelected = (idRange: IdRange, isSelecting = true) => {
-    if (isIdRangeSelectable(idRange)) {
-      updateSelectedIdRanges([idRange], isSelecting);
-    }
-  };
 
   const selectedPerPageData = getSelectedPerPageData(
     shownElementsList,
@@ -316,7 +311,7 @@ const IdRanges = () => {
                         selectedElements,
                         selectableElementsTable:
                           shownElementsList.filter(isIdRangeSelectable),
-                        setElementsSelected: setIdRangesSelected,
+                        setElementsSelected: updateSelectedIdRanges,
                         clearSelectedElements: () => setSelectedElements([]),
                       }}
                       buttonsData={{

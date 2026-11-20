@@ -189,15 +189,6 @@ const SelfServicePermissions = () => {
     setIsDeleteButtonDisabled(newSelected.length === 0);
   };
 
-  const setPermissionSelected = (
-    permission: SelfServicePermission,
-    isSelecting = true
-  ) => {
-    if (isSelfServicePermissionSelectable(permission)) {
-      updateSelectedPermissions([permission], isSelecting);
-    }
-  };
-
   const selectedPerPageData = getSelectedPerPageData(
     elementsList,
     selectedPermissions.map((item) => ipaPrimaryKey(item.aciname)),
@@ -335,7 +326,7 @@ const SelfServicePermissions = () => {
                       isElementSelectable: isSelfServicePermissionSelectable,
                       selectedElements: selectedPermissions,
                       selectableElementsTable: selectableOnPage,
-                      setElementsSelected: setPermissionSelected,
+                      setElementsSelected: updateSelectedPermissions,
                       clearSelectedElements: clearSelectedPermissions,
                     }}
                     buttonsData={{

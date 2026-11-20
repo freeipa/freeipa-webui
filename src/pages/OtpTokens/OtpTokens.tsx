@@ -200,13 +200,6 @@ const OtpTokens = () => {
     setIsDeleteButtonDisabled(newSelectedOtpTokens.length === 0);
   };
 
-  // - Helper method to set the selected entries from the table
-  const setOtpTokensSelected = (otpToken: OtpToken, isSelecting = true) => {
-    if (isOtpTokenSelectable(otpToken)) {
-      updateSelectedOtpTokens([otpToken], isSelecting);
-    }
-  };
-
   const selectedPerPageData = getSelectedPerPageData(
     otpTokens,
     selectedElements.map((otpToken) =>
@@ -394,7 +387,7 @@ const OtpTokens = () => {
                         isElementSelectable: isOtpTokenSelectable,
                         selectedElements,
                         selectableElementsTable: selectableOtpTokensTable,
-                        setElementsSelected: setOtpTokensSelected,
+                        setElementsSelected: updateSelectedOtpTokens,
                         clearSelectedElements: () => setSelectedElements([]),
                       }}
                       buttonsData={{

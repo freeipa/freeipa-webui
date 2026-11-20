@@ -191,13 +191,6 @@ const Services = () => {
     setIsDeleteButtonDisabled(newSelectedServices.length === 0);
   };
 
-  // - Helper method to set the selected users from the table
-  const setServiceSelected = (service: Service, isSelecting = true) => {
-    if (isServiceSelectable(service)) {
-      updateSelectedServices([service], isSelecting);
-    }
-  };
-
   // Derived states - what we get from API
   const servicesDataResponse = useGettingServicesQuery({
     searchValue: searchValue,
@@ -273,8 +266,7 @@ const Services = () => {
     isElementSelectable: isServiceSelectable,
     selectedElements: selectedServices,
     selectableElementsTable: selectableServicesTable,
-    setElementsSelected: setServiceSelected,
-    setElementsRangeSelected: updateSelectedServices,
+    setElementsSelected: updateSelectedServices,
     clearSelectedElements: clearSelectedServices,
   };
 

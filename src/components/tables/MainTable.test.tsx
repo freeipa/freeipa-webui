@@ -11,7 +11,6 @@ interface MockType {
 
 interface SelectionCallbacks {
   setElementsSelected: ReturnType<typeof vi.fn>;
-  setElementsRangeSelected?: ReturnType<typeof vi.fn>;
   isElementSelectable?: (element: MockType) => boolean;
 }
 
@@ -37,7 +36,6 @@ const makeTable = (items: MockType[], callbacks: SelectionCallbacks) => (
       selectedElements: [],
       selectableElementsTable: items,
       setElementsSelected: callbacks.setElementsSelected,
-      setElementsRangeSelected: callbacks.setElementsRangeSelected,
       clearSelectedElements: vi.fn(),
     }}
     buttonsData={{
@@ -77,9 +75,11 @@ describe("MainTable shift selection", () => {
 
     // The stale anchor must not produce a range over the old list
     expect(setElementsSelected).toHaveBeenCalledTimes(1);
-    expect(setElementsSelected).toHaveBeenCalledWith(shortList[0], true);
+    expect(setElementsSelected).toHaveBeenCalledWith([shortList[0]], true);
     expect(
-      setElementsSelected.mock.calls.every(([element]) => element !== undefined)
+      setElementsSelected.mock.calls.every(([elements]) =>
+        elements.every((element: MockType) => element !== undefined)
+      )
     ).toBe(true);
   });
 
@@ -98,12 +98,10 @@ describe("MainTable shift selection", () => {
 
   it("applies a shift range in one update, skipping non-selectable rows", () => {
     const setElementsSelected = vi.fn();
-    const setElementsRangeSelected = vi.fn();
     const items = makeItems(5);
     render(
       makeTable(items, {
         setElementsSelected,
-        setElementsRangeSelected,
         isElementSelectable: (item) => item.cn !== "item-2",
       })
     );
@@ -116,11 +114,10 @@ describe("MainTable shift selection", () => {
     fireEvent.click(screen.getAllByRole("checkbox")[4]);
     fireEvent.keyUp(document, { key: "Shift" });
 
-    expect(setElementsRangeSelected).toHaveBeenCalledTimes(1);
-    expect(setElementsRangeSelected).toHaveBeenCalledWith(
+    expect(setElementsSelected).toHaveBeenCalledTimes(1);
+    expect(setElementsSelected).toHaveBeenCalledWith(
       [items[0], items[1], items[3], items[4]],
       true
     );
-    expect(setElementsSelected).not.toHaveBeenCalled();
   });
 });

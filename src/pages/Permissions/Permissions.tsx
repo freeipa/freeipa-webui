@@ -181,15 +181,6 @@ const Permissions = () => {
     setIsDeleteButtonDisabled(newSelectedPermissions.length === 0);
   };
 
-  const setPermissionSelected = (
-    permission: Permission,
-    isSelecting = true
-  ) => {
-    if (isPermissionSelectable(permission)) {
-      updateSelectedPermissions([permission], isSelecting);
-    }
-  };
-
   const columnNames = ["Permission name", "Granted rights"];
   const keyNames = ["cn", "ipapermright"];
 
@@ -322,7 +313,7 @@ const Permissions = () => {
                       isElementSelectable: isPermissionSelectable,
                       selectedElements: selectedPermissions,
                       selectableElementsTable: selectablePermissionsTable,
-                      setElementsSelected: setPermissionSelected,
+                      setElementsSelected: updateSelectedPermissions,
                       clearSelectedElements: clearSelectedPermissions,
                     }}
                     buttonsData={{

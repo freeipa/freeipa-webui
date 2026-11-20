@@ -403,13 +403,6 @@ const ActiveUsers = () => {
     setIsDeleteButtonDisabled(newSelectedUsers.length === 0);
   };
 
-  // - Helper method to set the selected users from the table
-  const setUserSelected = (user: User, isSelecting = true) => {
-    if (isUserSelectable(user)) {
-      updateSelectedUsers([user], isSelecting);
-    }
-  };
-
   const selectedPerPageData = getSelectedPerPageData(
     activeUsersList,
     selectedUsers.map((item) => ipaPrimaryKey(item.uid)),
@@ -439,8 +432,7 @@ const ActiveUsers = () => {
     isElementSelectable: isUserSelectable,
     selectedElements: selectedUsers,
     selectableElementsTable: selectableUsersTable,
-    setElementsSelected: setUserSelected,
-    setElementsRangeSelected: updateSelectedUsers,
+    setElementsSelected: updateSelectedUsers,
     clearSelectedElements: clearSelectedUsers,
   };
 

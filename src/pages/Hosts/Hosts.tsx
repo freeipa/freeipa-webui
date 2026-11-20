@@ -220,13 +220,6 @@ const Hosts = () => {
     setIsDeleteButtonDisabled(newSelectedHosts.length === 0);
   };
 
-  // - Helper method to set the selected users from the table
-  const setHostSelected = (host: Host, isSelecting = true) => {
-    if (isHostSelectable(host)) {
-      updateSelectedHosts([host], isSelecting);
-    }
-  };
-
   // Dropdown kebab
   const [kebabIsOpen, setKebabIsOpen] = useState(false);
 
@@ -390,8 +383,7 @@ const Hosts = () => {
     isElementSelectable: isHostSelectable,
     selectedElements: selectedHosts,
     selectableElementsTable: selectableHostsTable,
-    setElementsSelected: setHostSelected,
-    setElementsRangeSelected: updateSelectedHosts,
+    setElementsSelected: updateSelectedHosts,
     clearSelectedElements: clearSelectedHosts,
   };
 
