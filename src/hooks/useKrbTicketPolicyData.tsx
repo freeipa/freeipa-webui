@@ -1,9 +1,11 @@
 import React from "react";
+import { useAppSelector } from "src/store/hooks";
+
 // RPC
-import { useGetObjectMetadataQuery } from "src/services/rpc";
 import { useKrbtPolicyShowQuery } from "src/services/rpcKrbTicketPolicy";
 // Data types
-import { KrbTicket, Metadata } from "src/utils/datatypes/globalDataTypes";
+import { KrbTicket } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 
 type KrbTicketSettingsData = {
   isLoading: boolean;
@@ -21,9 +23,7 @@ type KrbTicketSettingsData = {
 
 const useKrbTicketPolicyData = (): KrbTicketSettingsData => {
   // [API call] Metadata
-  const metadataQuery = useGetObjectMetadataQuery();
-  const metadata = metadataQuery.data || {};
-  const metadataLoading = metadataQuery.isLoading;
+  const metadata = useAppSelector((state) => state.global.metadata);
 
   // [API call] Password Policy
   const krbTicketDetails = useKrbtPolicyShowQuery();
@@ -42,7 +42,7 @@ const useKrbTicketPolicyData = (): KrbTicketSettingsData => {
   }, [krbTicketData, krbTicketDetails.isFetching]);
 
   const settings: KrbTicketSettingsData = {
-    isLoading: metadataLoading || isKrbTicketDataLoading,
+    isLoading: isKrbTicketDataLoading,
     isFetching: krbTicketDetails.isFetching,
     modified,
     setModified,

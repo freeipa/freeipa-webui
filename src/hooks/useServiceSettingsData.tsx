@@ -1,14 +1,11 @@
 import { useState, useEffect } from "react";
+import { useAppSelector } from "src/store/hooks";
 
 // RPC
-import { useGetObjectMetadataQuery } from "src/services/rpc";
 import { useGetServicesFullDataQuery } from "src/services/rpcServices";
 // Data types
-import {
-  Service,
-  Metadata,
-  Certificate,
-} from "src/utils/datatypes/globalDataTypes";
+import { Service, Certificate } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 
 type ServiceSettingsData = {
   isLoading: boolean;
@@ -27,9 +24,7 @@ type ServiceSettingsData = {
 
 const useServiceSettings = (serviceId: string): ServiceSettingsData => {
   // [API call] Metadata
-  const metadataQuery = useGetObjectMetadataQuery();
-  const metadata = metadataQuery.data || {};
-  const metadataLoading = metadataQuery.isLoading;
+  const metadata = useAppSelector((state) => state.global.metadata);
 
   // [API call] Service
   const serviceFullDataQuery = useGetServicesFullDataQuery(serviceId);
@@ -48,7 +43,7 @@ const useServiceSettings = (serviceId: string): ServiceSettingsData => {
   }, [serviceFullData, serviceFullDataQuery.isFetching]);
 
   const settings = {
-    isLoading: metadataLoading || isFullDataLoading,
+    isLoading: isFullDataLoading,
     isFetching: serviceFullDataQuery.isFetching,
     modified,
     setModified,

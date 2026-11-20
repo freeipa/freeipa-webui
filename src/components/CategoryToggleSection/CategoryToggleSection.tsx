@@ -15,7 +15,7 @@ import KeytabTableWithFilter, {
 import IpaToggleGroup from "src/components/Form/IpaToggleGroup";
 import { DualListTarget } from "src/components/layouts/DualListLayout";
 // Data types
-import { Metadata } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 
 /**
  * Configuration for a single tab in the CategoryToggleSection
