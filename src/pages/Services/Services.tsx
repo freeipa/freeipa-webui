@@ -410,14 +410,6 @@ const Services = () => {
                       pathname="services"
                       showTableRows={!isBatchFetching}
                       showLink={true}
-                      linkPath={(service) =>
-                        "/services/" +
-                        encodeURIComponent(
-                          encodeURIComponent(
-                            ipaPrimaryKey(service.krbcanonicalname)
-                          )
-                        )
-                      }
                       elementsData={servicesTableData}
                       buttonsData={servicesTableButtonsData}
                       paginationData={selectedPerPageData}
