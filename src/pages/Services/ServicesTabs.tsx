@@ -26,6 +26,7 @@ import DataSpinner from "src/components/layouts/DataSpinner";
 // Navigation
 import { NotFound } from "src/components/errors/PageErrors";
 import { useSafeParams } from "src/utils/paramsUtils";
+import { encodeRouteId } from "src/utils/routeUtils";
 
 type ServicesParams = {
   id: string;
@@ -35,9 +36,9 @@ type ServicesParams = {
 const ServicesTabs = ({ section }) => {
   const { id } = useSafeParams<ServicesParams>(["id"]);
 
-  // As the id is sent by React Router DOM partially decoded, this should be fixed
-  const decodedId = decodeURIComponent(id); // original ID
-  const doubleEncodedId = encodeURIComponent(encodeURIComponent(decodedId)); // double encoded ID
+  // useSafeParams returns the original id
+  const serviceId = id;
+  const encodedId = encodeRouteId(serviceId);
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -53,7 +54,7 @@ const ServicesTabs = ({ section }) => {
   }, [section, dispatch]);
 
   // Data loaded from DB
-  const serviceSettingsData = useServiceSettings(decodedId as string);
+  const serviceSettingsData = useServiceSettings(serviceId as string);
 
   // Tab
   const [activeTabKey, setActiveTabKey] = useState("settings");
@@ -63,11 +64,11 @@ const ServicesTabs = ({ section }) => {
     tabIndex: number | string
   ) => {
     if (tabIndex === "settings") {
-      navigate("/services/" + doubleEncodedId);
+      navigate("/services/" + encodedId);
     } else if (tabIndex === "memberof") {
-      navigate("/services/" + doubleEncodedId + "/memberof_role");
+      navigate("/services/" + encodedId + "/memberof_role");
     } else if (tabIndex === "managedby") {
-      navigate("/services/" + doubleEncodedId + "/managedby_host");
+      navigate("/services/" + encodedId + "/managedby_host");
     }
   };
 
@@ -79,20 +80,20 @@ const ServicesTabs = ({ section }) => {
         url: "/services",
       },
       {
-        name: decodedId,
-        url: "/services/" + doubleEncodedId,
+        name: serviceId,
+        url: "/services/" + encodedId,
         isActive: true,
       },
     ];
     setBreadcrumbItems(currentPath);
     setActiveTabKey("settings");
     dispatch(updateBreadCrumbPath(currentPath));
-  }, [id]);
+  }, [serviceId]);
 
   // Redirect to the settings page if the section is not defined
   React.useEffect(() => {
     if (!section) {
-      navigate("/services/" + doubleEncodedId);
+      navigate("/services/" + encodedId);
     }
     setActiveTabKey(section);
   }, [section]);

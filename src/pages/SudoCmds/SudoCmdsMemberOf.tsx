@@ -9,6 +9,9 @@ import { useNavigate } from "react-router";
 import TabLayout from "src/components/layouts/TabLayout";
 // Hooks
 import useUpdateRoute from "src/hooks/useUpdateRoute";
+// Utils
+import { encodeRouteId } from "src/utils/routeUtils";
+import { ipaPrimaryKey } from "src/utils/selectedPerPage";
 // RPC
 import { useGetSudoCmdByIdQuery } from "src/services/rpcSudoCmds";
 // 'Is a member of' sections
@@ -44,7 +47,12 @@ const SudoCmdsMemberOf = (props: PropsToMemberOf) => {
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
     tabIndex: number | string
   ) => {
-    navigate("/sudo-commands/" + props.sudoCmd.sudocmd + "/" + tabIndex);
+    navigate(
+      "/sudo-commands/" +
+        encodeRouteId(ipaPrimaryKey(props.sudoCmd.sudocmd)) +
+        "/" +
+        tabIndex
+    );
   };
 
   // Render component

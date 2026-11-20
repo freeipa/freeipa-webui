@@ -23,6 +23,8 @@ import SkeletonOnTableLayout from "../layouts/Skeleton/SkeletonOnTableLayout";
 import EmptyBodyTable from "./EmptyBodyTable";
 // Utils
 import { parseEmptyString } from "src/utils/utils";
+import { encodeRouteId } from "src/utils/routeUtils";
+import { ipaPrimaryKey } from "src/utils/selectedPerPage";
 // Icons
 import { CheckIcon } from "@patternfly/react-icons";
 import { MinusIcon } from "@patternfly/react-icons";
@@ -111,10 +113,8 @@ const TableBody = (props: {
     return !NO_LINK_TYPES.includes(from);
   };
 
-  const getItemLink = (from: string, itemId: string) =>
-    from === "services"
-      ? `/${from}/${encodeURIComponent(itemId)}`
-      : `/${from}/${itemId}`;
+  const getItemLink = (from: string, itemId: string | string[]) =>
+    `/${from}/${encodeRouteId(ipaPrimaryKey(itemId))}`;
 
   return (
     <>
