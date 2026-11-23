@@ -35,6 +35,29 @@ function createEmptyTopologySuffix(): TopologySuffix {
   };
 }
 
+// Topology segment simple values
+const topologySegmentSimpleValues = new Set([
+  "cn",
+  "iparepltoposegmentleftnode",
+  "iparepltoposegmentrightnode",
+  "iparepltoposegmentdirection",
+  "nsds5replicastripattrs",
+  "nsds5replicatedattributelist",
+  "nsds5replicatedattributelisttotal",
+  "nsds5replicaenabled",
+]);
+
+export function apiToTopologySegment(
+  apiRecord: Record<string, unknown>
+): TopologySegment {
+  const converted = convertApiObj(
+    apiRecord,
+    topologySegmentSimpleValues,
+    new Set()
+  ) as Partial<TopologySegment>;
+  return { ...createEmptyTopologySegment(), ...converted };
+}
+
 export function createEmptyTopologySegment(): TopologySegment {
   return {
     cn: "",

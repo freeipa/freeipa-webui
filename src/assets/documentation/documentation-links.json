@@ -216,5 +216,6 @@
   "permissions-settings": [],
   "sysaccount-settings": [],
   "radius-servers-settings": [],
-  "topology-suffixes-settings": []
+  "topology-suffixes-settings": [],
+  "topology-segments": []
 }

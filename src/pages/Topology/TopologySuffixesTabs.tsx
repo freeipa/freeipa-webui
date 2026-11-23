@@ -14,6 +14,7 @@ import BreadCrumb, {
   BreadCrumbItem,
 } from "src/components/layouts/BreadCrumb/BreadCrumb";
 import TopologySuffixesSettings from "src/pages/Topology/TopologySuffixesSettings";
+import TopologySegments from "src/pages/Topology/TopologySegments";
 import { CnParams, useSafeParams } from "src/utils/paramsUtils";
 
 const TopologySuffixesTabs = ({ section }: { section: string }) => {
@@ -30,6 +31,8 @@ const TopologySuffixesTabs = ({ section }: { section: string }) => {
   ) => {
     if (tabIndex === "settings") {
       navigate("/" + pathname + "/" + cn);
+    } else if (tabIndex === "segments") {
+      navigate("/" + pathname + "/" + cn + "/segments");
     }
   };
 
@@ -87,6 +90,14 @@ const TopologySuffixesTabs = ({ section }: { section: string }) => {
               onRefresh={topologySuffixSettingsData.refetch}
               pathname={pathname}
             />
+          </Tab>
+          <Tab
+            eventKey={"segments"}
+            name="segments"
+            title={<TabTitleText>Topology segments</TabTitleText>}
+            data-cy="topology-suffixes-tab-segments"
+          >
+            <TopologySegments topologySuffixId={cn} />
           </Tab>
         </Tabs>
       </PageSection>

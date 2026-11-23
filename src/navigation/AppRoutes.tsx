@@ -571,6 +571,10 @@ export const AppRoutes = (): React.ReactElement => {
                   path=""
                   element={<TopologySuffixesTabs section="settings" />}
                 />
+                <Route
+                  path="segments"
+                  element={<TopologySuffixesTabs section="segments" />}
+                />
               </Route>
             </Route>
             <Route path="roles">
