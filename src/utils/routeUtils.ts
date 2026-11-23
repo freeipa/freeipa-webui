@@ -3,14 +3,9 @@
  *
  * Slashes are double-encoded because the web server rejects encoded slashes
  * (AllowEncodedSlashes Off by default) before the SPA can handle a hard
- * refresh. Other characters only need to be encoded once.
+ * refresh. Other characters only need to be encoded once. React Router
+ * decodes the params when matching the route, so pages receive the original
+ * ID without an extra decode step.
  */
 export const encodeRouteId = (id: string): string =>
   encodeURIComponent(id).replace(/%2F/gi, "%252F");
-
-/**
- * Undo the extra slash encoding applied by encodeRouteId.
- * Values without an encoded slash are returned unchanged.
- */
-export const decodeRouteId = (id: string): string =>
-  /%2F/i.test(id) ? decodeURIComponent(id) : id;

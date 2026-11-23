@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { decodeRouteId, encodeRouteId } from "./routeUtils";
+import { encodeRouteId } from "./routeUtils";
 
 describe("encodeRouteId", () => {
   it("leaves ids without slashes single-encoded", () => {
@@ -12,15 +12,5 @@ describe("encodeRouteId", () => {
     expect(encodeRouteId("0/25.2.0.192.in-addr.arpa.")).toBe(
       "0%252F25.2.0.192.in-addr.arpa."
     );
-  });
-});
-
-describe("decodeRouteId", () => {
-  it("decodes the extra slash encoding", () => {
-    expect(decodeRouteId("%2Fusr%2Fbin%2Fls")).toBe("/usr/bin/ls");
-  });
-
-  it("returns values without encoded slashes unchanged", () => {
-    expect(decodeRouteId("test group")).toBe("test group");
   });
 });
