@@ -13,7 +13,10 @@ import {
   TopologySegment,
   TopologySuffix,
 } from "src/utils/datatypes/globalDataTypes";
-import { apiToTopologySuffix } from "src/utils/topologyUtils";
+import {
+  apiToTopologySegment,
+  apiToTopologySuffix,
+} from "src/utils/topologyUtils";
 
 /**
  * Topology-related endpoints: findTopologyFullDataQuery, getTopologySuffixesFullData
@@ -41,6 +44,28 @@ interface TopologySuffixesFullDataPayload {
 interface TopologyFullData {
   topologySuffixes: TopologySuffix[];
   topologySegments: (TopologySegment | null)[];
+}
+
+interface TopologySegmentsPayload {
+  suffix: string;
+  searchValue?: string;
+}
+
+interface TopologySegmentsResponse {
+  segments: TopologySegment[];
+  totalCount: number;
+}
+
+interface AddTopologySegmentPayload {
+  suffix: string;
+  cn: string;
+  iparepltoposegmentleftnode: string;
+  iparepltoposegmentrightnode: string;
+}
+
+interface DeleteTopologySegmentsPayload {
+  suffix: string;
+  cn: string[];
 }
 
 const extendedApi = api.injectEndpoints({
@@ -135,6 +160,23 @@ const extendedApi = api.injectEndpoints({
       },
     }),
 
+    /**
+     * Show a specific topology suffix.
+     * @param {string} cn - The CN of the topology suffix
+     * @returns {FindRPCResponse} - The topology suffix data
+     */
+    topologySuffixShow: build.query<FindRPCResponse, string>({
+      query: (cn) => {
+        return getCommand({
+          method: "topologysuffix_show",
+          params: [
+            [cn],
+            { all: true, rights: true, version: API_VERSION_BACKUP },
+          ],
+        });
+      },
+    }),
+
     getTopologySuffixesFullData: build.query<
       BatchRPCResponse,
       TopologySuffixesFullDataPayload
@@ -180,11 +222,79 @@ const extendedApi = api.injectEndpoints({
         return { data: response };
       },
     }),
+
+    /**
+     * Find the segments of a topology suffix.
+     * @param {TopologySegmentsPayload} payload - Suffix CN and search value
+     * @returns {TopologySegmentsResponse} - Segments and total count
+     */
+    getTopologySegments: build.query<
+      TopologySegmentsResponse,
+      TopologySegmentsPayload
+    >({
+      query: ({ suffix, searchValue }) =>
+        getCommand({
+          method: "topologysegment_find",
+          params: [[suffix, searchValue || ""], { all: true, sizelimit: 0 }],
+        }),
+      transformResponse: (
+        response: FindRPCResponse
+      ): TopologySegmentsResponse => {
+        const records = response.result.result as unknown as Record<
+          string,
+          unknown
+        >[];
+        return {
+          segments: records.map((record) => apiToTopologySegment(record)),
+          totalCount: response.result.count,
+        };
+      },
+    }),
+
+    /**
+     * Add a topology segment to a suffix.
+     */
+    addTopologySegment: build.mutation<
+      FindRPCResponse,
+      AddTopologySegmentPayload
+    >({
+      query: (payload) =>
+        getCommand({
+          method: "topologysegment_add",
+          params: [
+            [payload.suffix, payload.cn],
+            {
+              iparepltoposegmentleftnode: payload.iparepltoposegmentleftnode,
+              iparepltoposegmentrightnode: payload.iparepltoposegmentrightnode,
+            },
+          ],
+        }),
+    }),
+
+    /**
+     * Delete topology segments from a suffix via batch `topologysegment_del`.
+     */
+    deleteTopologySegments: build.mutation<
+      BatchRPCResponse,
+      DeleteTopologySegmentsPayload
+    >({
+      query: ({ suffix, cn }) => {
+        const commands: Command[] = cn.map((name) => ({
+          method: "topologysegment_del",
+          params: [[suffix, name], {}],
+        }));
+        return getBatchCommand(commands, API_VERSION_BACKUP);
+      },
+    }),
   }),
   overrideExisting: false,
 });
 
 export const {
+  useAddTopologySegmentMutation,
+  useDeleteTopologySegmentsMutation,
   useFindTopologyFullDataQuery,
+  useGetTopologySegmentsQuery,
   useGetTopologySuffixesFullDataQuery,
+  useTopologySuffixShowQuery,
 } = extendedApi;
