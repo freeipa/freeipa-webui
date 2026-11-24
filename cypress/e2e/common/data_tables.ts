@@ -125,6 +125,12 @@ When("I check entry {string} in the data table", (name: string) => {
   checkEntry(name);
 });
 
+When("I click on {string} entry in the data table", (name: string) => {
+  cy.get("tr[id='" + name + "']")
+    .find("a")
+    .click();
+});
+
 When(
   "I select {string} entry in the data table with ID {string}",
   (name: string, tableId: string) => {
