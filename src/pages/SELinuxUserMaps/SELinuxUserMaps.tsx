@@ -350,7 +350,7 @@ const SELinuxUserMaps = () => {
                       hasCheckboxes={true}
                       pathname="selinux-user-maps"
                       showTableRows={!isFetching}
-                      showLink={false}
+                      showLink={true}
                       elementsData={{
                         isElementSelectable: isSelinuxUserMapSelectable,
                         selectedElements,
