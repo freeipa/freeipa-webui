@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
+import { useAppSelector } from "src/store/hooks";
 // RPC
-import { useGetObjectMetadataQuery } from "src/services/rpc";
 import { useRadiusServerShowQuery } from "src/services/rpcRadiusServers";
 // Data types
-import { RadiusServer, Metadata } from "src/utils/datatypes/globalDataTypes";
+import { RadiusServer } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 
 type RadiusServerSettingsData = {
   isLoading: boolean;
@@ -22,10 +23,8 @@ type RadiusServerSettingsData = {
 const useRadiusServerSettings = (
   serverId: string
 ): RadiusServerSettingsData => {
-  // [API call] Metadata
-  const metadataQuery = useGetObjectMetadataQuery();
-  const metadata = metadataQuery.data || {};
-  const metadataLoading = metadataQuery.isLoading;
+  // Metadata from global Redux state
+  const metadata = useAppSelector((state) => state.global.metadata);
 
   // [API call] RADIUS Server
   const serverQuery = useRadiusServerShowQuery(serverId);
@@ -96,7 +95,7 @@ const useRadiusServerSettings = (
   };
 
   return {
-    isLoading: metadataLoading || serverQuery.isLoading,
+    isLoading: serverQuery.isLoading,
     isFetching: serverQuery.isFetching,
     modified,
     setModified,

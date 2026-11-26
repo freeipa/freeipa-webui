@@ -24,7 +24,8 @@ import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Icons
 import { HelpIcon } from "@patternfly/react-icons";
 // Data types
-import { IDView, Metadata } from "../../utils/datatypes/globalDataTypes";
+import { IDView } from "../../utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 // RPC
 import { ErrorResult } from "src/services/rpc";
 import { useSaveIDViewMutation } from "src/services/rpcIDViews";
