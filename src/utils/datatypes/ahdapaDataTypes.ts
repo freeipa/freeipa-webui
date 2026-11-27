@@ -88,29 +88,18 @@ export interface AhdapaClient {
   source: AhdapaClientSource;
 }
 
-export interface AhdapaCreateClientRequest {
+// Writable fields of AhdapaClient: server-assigned ones are omitted, and the
+// certificate is sent on create while the API returns only its thumbprint.
+export type AhdapaCreateClientRequest = Partial<
+  Omit<
+    AhdapaClient,
+    "client_id" | "source" | "tls_client_certificate_thumbprint"
+  >
+> & {
   client_name: string;
-  redirect_uris?: string[];
-  scopes?: string[];
-  token_endpoint_auth_method?: AhdapaAuthMethod;
   client_secret?: string;
-  jwks_uri?: string;
-  subject_type?: string;
-  grant_types?: string[];
   tls_client_certificate?: string;
-  tls_client_auth_subject_dn?: string;
-  kerberos_principal?: string;
-  kerberos_principal_pattern?: string;
-  kerberos_hbac_service?: string;
-  spiffe_id?: string;
-  id_token_signed_response_alg?: AhdapaIdTokenAlg;
-  workload_type?: string;
-  allow_token_exchange_actor?: boolean;
-  skip_consent?: boolean;
-  localhost_only?: boolean;
-  allowed_token_exchange_audiences?: string[];
-  allowed_registry_repositories?: AhdapaRegistryRepositoryGrant[];
-}
+};
 
 // ── OAuth2 Scopes ──
 

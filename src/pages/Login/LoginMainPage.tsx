@@ -27,6 +27,7 @@ import {
   authApi,
   MetaResponse,
   useKrbLoginMutation,
+  useOidcConfigQuery,
   useUserPasswordLoginMutation,
   useX509LoginMutation,
 } from "src/services/rpcAuth";
@@ -116,8 +117,13 @@ const LoginMainPage = () => {
   const [onUserPwdLogin] = useUserPasswordLoginMutation();
   const [onKrbLogin] = useKrbLoginMutation();
   const [onCertLogin] = useX509LoginMutation();
+  const {
+    data: oidcConfig,
+    isError: oidcConfigError,
+    refetch: refetchOidcConfig,
+  } = useOidcConfigQuery(undefined, { skip: !ahdapaAvailable });
 
-  const oidcRedirectFailed = React.useRef(false);
+  const oidcUnavailable = !oidcConfig && oidcConfigError;
 
   // OIDC PKCE login when ahdapa is available, or Kerberos auto-login as fallback.
   // Wait for the ahdapa probe to complete before choosing the login method.
@@ -129,13 +135,9 @@ const LoginMainPage = () => {
       return;
     }
     if (ahdapaAvailable) {
-      initiateOidcLogin().then((ok) => {
-        if (!ok) {
-          oidcRedirectFailed.current = true;
-          setErrorMessage("OIDC login is not available");
-          setShowHelperText(true);
-        }
-      });
+      if (oidcConfig) {
+        initiateOidcLogin(oidcConfig);
+      }
       return;
     }
     if (!username) {
@@ -157,7 +159,7 @@ const LoginMainPage = () => {
         }
       });
     }
-  }, [ahdapaProbed, ahdapaAvailable, isKerberosDisabled]);
+  }, [ahdapaProbed, ahdapaAvailable, isKerberosDisabled, oidcConfig]);
 
   // Handling API errors
   const [showErrorModal, setShowErrorModal] = React.useState(false);
@@ -367,7 +369,11 @@ const LoginMainPage = () => {
             data-cy="login-button-oidc"
             aria-label="Login using Single Sign-On"
             onClick={() => {
-              initiateOidcLogin();
+              if (oidcConfig) {
+                initiateOidcLogin(oidcConfig);
+              } else {
+                refetchOidcConfig();
+              }
             }}
           >
             <Content component="p">Login using Single Sign-On</Content>
@@ -419,8 +425,10 @@ const LoginMainPage = () => {
 
   const loginForm = (
     <LoginForm
-      showHelperText={showHelperText}
-      helperText={errorMessage}
+      showHelperText={showHelperText || oidcUnavailable}
+      helperText={
+        errorMessage || (oidcUnavailable ? "OIDC login is not available" : "")
+      }
       helperTextIcon={<ExclamationCircleIcon />}
       usernameLabel="Username"
       usernameValue={username}
@@ -462,7 +470,7 @@ const LoginMainPage = () => {
     ahdapaProbed &&
     ahdapaAvailable &&
     !isKerberosDisabled &&
-    !oidcRedirectFailed.current &&
+    !oidcUnavailable &&
     !oidcError
   ) {
     return <DataSpinner />;

@@ -81,7 +81,14 @@ export interface SyncOtpPayload {
   token?: string;
 }
 
-export interface OidcLoginPayload {
+export interface OidcConfig {
+  authorization_endpoint: string;
+  client_id: string;
+  redirect_uri: string;
+  scopes: string;
+}
+
+interface OidcLoginPayload {
   code: string;
   codeVerifier: string;
   redirectUri: string;
@@ -143,6 +150,12 @@ const extendedApi = api.injectEndpoints({
           method: "session_logout",
           params: [[], {}],
         }),
+    }),
+    oidcConfig: build.query<OidcConfig, void>({
+      query: () => ({
+        url: OIDC_LOGIN_URL,
+        headers: { Referer: URL_PREFIX + "/login" },
+      }),
     }),
     oidcLogin: build.mutation<void, OidcLoginPayload>({
       query: (payload) => {
@@ -309,5 +322,6 @@ export const {
   useResetPasswordMutation,
   useSyncOtpMutation,
   useUserMetadataQuery,
+  useOidcConfigQuery,
   useOidcLoginMutation,
 } = authApi;

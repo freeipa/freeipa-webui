@@ -1,11 +1,4 @@
-const OIDC_LOGIN_URL = "/ipa/session/login_oidc";
-
-interface OidcConfig {
-  authorization_endpoint: string;
-  client_id: string;
-  redirect_uri: string;
-  scopes: string;
-}
+import type { OidcConfig } from "src/services/rpcAuth";
 
 function base64urlEncode(buffer: ArrayBuffer): string {
   const bytes = new Uint8Array(buffer);
@@ -32,29 +25,11 @@ async function computeCodeChallenge(verifier: string): Promise<string> {
   return base64urlEncode(hash);
 }
 
-export async function fetchOidcConfig(): Promise<OidcConfig | null> {
-  try {
-    const resp = await fetch(OIDC_LOGIN_URL, {
-      headers: { Referer: window.location.origin + "/ipa" },
-    });
-    if (!resp.ok) return null;
-    return await resp.json();
-  } catch {
-    return null;
-  }
-}
-
 let oidcLoginInFlight = false;
 
-export async function initiateOidcLogin(): Promise<boolean> {
-  if (oidcLoginInFlight) return true;
+export async function initiateOidcLogin(config: OidcConfig): Promise<void> {
+  if (oidcLoginInFlight) return;
   oidcLoginInFlight = true;
-
-  const config = await fetchOidcConfig();
-  if (!config) {
-    oidcLoginInFlight = false;
-    return false;
-  }
 
   const codeVerifier = generateCodeVerifier();
   const state = generateCodeVerifier();
@@ -74,7 +49,6 @@ export async function initiateOidcLogin(): Promise<boolean> {
   });
 
   window.location.href = `${config.authorization_endpoint}?${params}`;
-  return true;
 }
 
 export function takeOidcCodeVerifier(
