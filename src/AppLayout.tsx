@@ -38,10 +38,14 @@ import { useLogoutMutation } from "./services/rpcAuth";
 import { useGetUserByUidQuery } from "./services/rpcUsers";
 import { Outlet } from "react-router";
 import { logoutUser } from "./store/Global/global-slice";
+import { URL_PREFIX } from "./navigation/NavRoutes";
 
 const AppLayout = () => {
   const dispatch = useAppDispatch();
   const loggedInUser = useAppSelector((state) => state.global.loggedInUser);
+  const ahdapaAvailable = useAppSelector(
+    (state) => state.ahdapa?.available ?? false
+  );
 
   // RPC
   const [logout] = useLogoutMutation();
@@ -66,8 +70,18 @@ const AppLayout = () => {
   const onLogout = () => {
     logout().then((response) => {
       if ("data" in response && !response.data?.error) {
-        sessionStorage.setItem("isKerberosDisabled", "true");
-        dispatch(logoutUser());
+        if (ahdapaAvailable) {
+          fetch("/idp/api/auth/logout", {
+            method: "POST",
+            credentials: "include",
+          }).finally(() => {
+            // Hard reload on purpose: restarts the OIDC flow from a clean state
+            window.location.href = URL_PREFIX;
+          });
+        } else {
+          sessionStorage.setItem("isKerberosDisabled", "true");
+          dispatch(logoutUser());
+        }
       }
     });
   };
